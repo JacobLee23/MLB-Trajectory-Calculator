@@ -6,7 +6,7 @@ from decimal import Decimal
 
 import pytest
 
-from mlbtc.calculator import base_units
+from mlbtc.calculator import units
 from mlbtc.calculator.constants import Number
 
 
@@ -31,7 +31,7 @@ def test_length(
     """
     arguments = {k: Decimal(v) for k, v in locals().items()}
     for unit, value in arguments.items():
-        x = base_units.Length(**{unit: value})
+        x = units.Length(**{unit: value})
 
         for key in arguments:
             assert float(x[key]) == float(arguments[key]), x
@@ -55,7 +55,33 @@ def test_temperature(
     """
     arguments = {k: Decimal(v) for k, v in locals().items()}
     for unit, value in arguments.items():
-        x = base_units.Temperature(**{unit: value})
+        x = units.Temperature(**{unit: value})
+
+        for key in arguments:
+            assert float(x[key]) == float(arguments[key]), x
+
+
+@pytest.mark.parametrize(
+    "gram, ounce, pound, ton_uk, ton_us", [
+        (
+                Decimal("28.349523125"), 1, Decimal("1") / Decimal("16"),
+                Decimal("1") / Decimal("35840"), Decimal("1") / Decimal("32000")
+        ),
+        (
+                Decimal("28.349523125") * 16, 16, 1,
+                Decimal("1") / Decimal("2240"), Decimal("1") / Decimal("2000")
+        )
+    ]
+)
+def test_mass(
+        gram: Number, ounce: Number, pound: Number, ton_uk: Number, ton_us: Number
+):
+    """
+    Unit tests for :py:class:`mlbtc.calculator.base_units.Mass`.
+    """
+    arguments = {k: Decimal(v) for k, v in locals().items()}
+    for unit, value in arguments.items():
+        x = units.Mass(**{unit: value})
 
         for key in arguments:
             assert float(x[key]) == float(arguments[key]), x

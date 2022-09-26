@@ -214,3 +214,86 @@ class Temperature(Unit):
         if self._kelvin is not None:
             return self._kelvin
         return self.celsius + Decimal("273.15")
+
+
+class Mass(Unit):
+    """
+
+    """
+    def __init__(
+            self, *,
+            gram: typing.Optional[Number] = None,
+            ounce: typing.Optional[Number] = None,
+            pound: typing.Optional[Number] = None,
+            ton_uk: typing.Optional[Number] = None,
+            ton_us: typing.Optional[Number] = None
+    ):
+        """
+
+        :param gram:
+        :param ounce:
+        :param pound:
+        :param ton_uk:
+        :param ton_us:
+        """
+        local_vars = locals()
+        kwargs = {k: local_vars[k] for k in inspect.signature(self.__init__).parameters}
+
+        (
+            self._gram, self._ounce, self._pound, self._ton_uk, self._ton_us
+        ) = [Decimal() for _ in kwargs]
+
+        super().__init__(**kwargs)
+
+    @property
+    def gram(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._gram is not None:
+            return self._gram
+        return self.ounce * Decimal("28.349523125")
+
+    @property
+    def ounce(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._gram is not None:
+            return self.gram / Decimal("28.349523125")
+        elif self._ounce is not None:
+            return self._ounce
+        elif self._pound is not None:
+            return self.pound * Decimal("16")
+        elif self._ton_uk is not None:
+            return self.ton_uk * Decimal("35840")
+        elif self._ton_us is not None:
+            return self.ton_us * Decimal("32000")
+
+    @property
+    def pound(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._pound is not None:
+            return self._pound
+        return self.ounce / Decimal("16")
+
+    @property
+    def ton_uk(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._ton_uk is not None:
+            return self._ton_uk
+        return self.ounce / Decimal("35840")
+
+    @property
+    def ton_us(self) -> Decimal:
+        if self._ton_us is not None:
+            return self._ton_us
+        return self.ounce / Decimal("32000")
