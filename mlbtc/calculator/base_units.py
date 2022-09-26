@@ -13,30 +13,30 @@ class MetricPrefixes:
     """
 
     """
-    yotta = Y = Decimal("1E+24")
-    zetta = Z = Decimal("1E+21")
-    exa = E = Decimal("1E+18")
-    peta = P = Decimal("1E+15")
-    tera = T = Decimal("1E+12")
-    giga = G = Decimal("1E+9")
-    mega = M = Decimal("1E+6")
-    kilo = k = Decimal("1E+3")
-    hecto = h = Decimal("1E+2")
-    deka = da = Decimal("1E+1")
+    yotta = Decimal("1E+24")
+    zetta = Decimal("1E+21")
+    exa = Decimal("1E+18")
+    peta = Decimal("1E+15")
+    tera = Decimal("1E+12")
+    giga = Decimal("1E+9")
+    mega = Decimal("1E+6")
+    kilo = Decimal("1E+3")
+    hecto = Decimal("1E+2")
+    deka = Decimal("1E+1")
 
-    deci = d = Decimal("1E-1")
-    centi = c = Decimal("1E-2")
-    milli = m = Decimal("1E-3")
-    micro = mu = Decimal("1E-6")
-    nano = n = Decimal("1E-9")
-    pico = p = Decimal("1E-12")
-    femto = f = Decimal("1E-15")
-    atto = a = Decimal("1E-18")
-    zepto = z = Decimal("1E-21")
-    yocto = y = Decimal("1E-24")
+    deci = Decimal("1E-1")
+    centi = Decimal("1E-2")
+    milli = Decimal("1E-3")
+    micro = Decimal("1E-6")
+    nano = Decimal("1E-9")
+    pico = Decimal("1E-12")
+    femto = Decimal("1E-15")
+    atto = Decimal("1E-18")
+    zepto = Decimal("1E-21")
+    yoct = Decimal("1E-24")
 
 
-class Unit:
+class Unit(MetricPrefixes):
     """
 
     """
@@ -109,7 +109,7 @@ class Length(Unit):
         elif self._foot is not None:
             return self.foot * Decimal("12")
         elif self._meter is not None:
-            return self.meter / MetricPrefixes.c / Decimal("2.54")
+            return self.meter / self.centi / Decimal("2.54")
         elif self._mile is not None:
             return self.mile * Decimal("5280") * Decimal("12")
         elif self._yard is not None:
@@ -135,7 +135,7 @@ class Length(Unit):
         if self._meter is not None:
             return self._meter
         else:
-            return self.inch * Decimal("2.54") * MetricPrefixes.c
+            return self.inch * Decimal("2.54") * self.centi
 
     @property
     def mile(self) -> Decimal:
