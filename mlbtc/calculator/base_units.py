@@ -123,8 +123,7 @@ class Length(Unit):
         """
         if self._foot is not None:
             return self._foot
-        else:
-            return self.inch / Decimal("12")
+        return self.inch / Decimal("12")
 
     @property
     def meter(self) -> Decimal:
@@ -134,8 +133,7 @@ class Length(Unit):
         """
         if self._meter is not None:
             return self._meter
-        else:
-            return self.inch * Decimal("2.54") * self.centi
+        return self.inch * Decimal("2.54") * self.centi
 
     @property
     def mile(self) -> Decimal:
@@ -145,8 +143,7 @@ class Length(Unit):
         """
         if self._mile is not None:
             return self._mile
-        else:
-            return self.inch / Decimal("12") / Decimal("5280")
+        return self.inch / Decimal("12") / Decimal("5280")
 
     @property
     def yard(self) -> Decimal:
@@ -156,8 +153,7 @@ class Length(Unit):
         """
         if self._yard is not None:
             return self._yard
-        else:
-            return self.inch / Decimal("12") / Decimal("3")
+        return self.inch / Decimal("12") / Decimal("3")
 
 
 class Temperature(Unit):
@@ -207,8 +203,7 @@ class Temperature(Unit):
         """
         if self._fahrenheit is not None:
             return self._fahrenheit
-        else:
-            return Decimal("9") / Decimal("5") * self.celsius + Decimal("32")
+        return Decimal("9") / Decimal("5") * self.celsius + Decimal("32")
 
     @property
     def kelvin(self) -> Decimal:
@@ -218,5 +213,4 @@ class Temperature(Unit):
         """
         if self._kelvin is not None:
             return self._kelvin
-        else:
-            return self.celsius + Decimal("273.15")
+        return self.celsius + Decimal("273.15")
