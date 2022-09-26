@@ -3,6 +3,7 @@
 """
 
 from decimal import Decimal
+import inspect
 import typing
 
 from .constants import Number
@@ -35,7 +36,40 @@ class MetricPrefixes:
     yocto = y = Decimal("1E-24")
 
 
-class Length:
+class Unit:
+    """
+
+    """
+    def __init__(self, **kwargs):
+        """
+
+        :param kwargs:
+        """
+        if [x is not None for x in kwargs.values()].count(True) != 1:
+            raise ValueError(
+                f"Exactly one of {', '.join(f'{x}' for x in kwargs)} must be non-null"
+            )
+
+        for name, value in kwargs.items():
+            self.__setattr__(
+                f"_{name}",
+                None if value is None else Decimal(str(value))
+            )
+
+    def __repr__(self):
+        attributes = (f"{k}={self[k]}" for k in vars(self))
+        return f"{self.__name__}({', '.join(attributes)})"
+
+    def __getitem__(self, item: str) -> Decimal:
+        """
+
+        :param item:
+        :return:
+        """
+        return self.__getattribute__(item)
+
+
+class Length(Unit):
     """
 
     """
@@ -55,35 +89,14 @@ class Length:
         :param mile:
         :param yard:
         """
-        args = {k: v for k, v in locals().items() if k != "self"}
-        if [x is not None for x in args.values()].count(True) != 1:
-            raise ValueError(
-                f"Exactly one of {', '.join(f'{x}' for x in args)} must be non-null"
-            )
+        local_vars = locals()
+        kwargs = {k: local_vars[k] for k in inspect.signature(self.__init__).parameters}
 
-        self._inch = None if inch is None else Decimal(str(inch))
-        self._foot = None if foot is None else Decimal(str(foot))
-        self._meter = None if meter is None else Decimal(str(meter))
-        self._mile = None if mile is None else Decimal(str(mile))
-        self._yard = None if yard is None else Decimal(str(yard))
+        (
+            self._inch, self._foot, self._meter, self._mile, self._yard
+        ) = [Decimal() for _ in kwargs]
 
-    def __repr__(self) -> str:
-        args = [
-            f"inch={float(self.inch)}",
-            f"foot={float(self.foot)}",
-            f"meter={float(self.meter)}",
-            f"mile={float(self.mile)}",
-            f"yard={float(self.yard)}"
-        ]
-        return f"Length({', '.join(args)})"
-
-    def __getitem__(self, item: str) -> Decimal:
-        """
-
-        :param item:
-        :return:
-        """
-        return self.__getattribute__(item)
+        super().__init__(**kwargs)
 
     @property
     def inch(self) -> Decimal:
@@ -147,7 +160,7 @@ class Length:
             return self.inch / Decimal("12") / Decimal("3")
 
 
-class Temperature:
+class Temperature(Unit):
     """
 
     """
@@ -164,31 +177,14 @@ class Temperature:
         :param fahrenheit:
         :param kelvin:
         """
-        args = {k: v for k, v in locals().items() if k != "self"}
-        if [x is not None for x in args.values()].count(True) != 1:
-            raise ValueError(
-                f"Exactly one of {', '.join(f'{x}' for x in args)} must be non-null"
-            )
+        local_vars = locals()
+        kwargs = {k: local_vars[k] for k in inspect.signature(self.__init__).parameters}
 
-        self._celsius = None if celsius is None else Decimal(str(celsius))
-        self._fahrenheit = None if fahrenheit is None else Decimal(str(fahrenheit))
-        self._kelvin = None if kelvin is None else Decimal(str(kelvin))
+        (
+            self._celsius, self._fahrenheit, self._kelvin
+        ) = [Decimal() for _ in kwargs]
 
-    def __repr__(self) -> str:
-        args = [
-            f"celsius={float(self.celsius)}",
-            f"fahrenheit={float(self.fahrenheit)}",
-            f"kelvin={float(self.kelvin)}"
-        ]
-        return f"Temperature({', '.join(args)})"
-
-    def __getitem__(self, item: str) -> Decimal:
-        """
-
-        :param item:
-        :return:
-        """
-        return self.__getattribute__(item)
+        super().__init__(**kwargs)
 
     @property
     def celsius(self) -> Decimal:
