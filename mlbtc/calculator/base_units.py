@@ -10,13 +10,6 @@ class Temperature:
     """
 
     """
-    class _Temperature(typing.NamedTuple):
-        """
-
-        """
-        celsius: float
-        fahrenheit: float
-        kelvin: float
 
     def __init__(
             self, *,
@@ -96,3 +89,11 @@ class Temperature:
             return self._k
         else:
             raise ValueError
+
+    @property
+    def si(self) -> Decimal:
+        """
+
+        :return:
+        """
+        return self.celsius
