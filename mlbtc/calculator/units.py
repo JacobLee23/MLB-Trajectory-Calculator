@@ -36,6 +36,9 @@ class MetricPrefixes:
     yoct = Decimal("1E-24")
 
 
+# Basic Units
+
+
 class Unit(MetricPrefixes):
     """
 
@@ -57,8 +60,8 @@ class Unit(MetricPrefixes):
             )
 
     def __repr__(self):
-        attributes = (f"{k}={self[k]}" for k in vars(self))
-        return f"{self.__name__}({', '.join(attributes)})"
+        attributes = (f"{k.strip('_')}={self[k.strip('_')]}" for k in vars(self))
+        return f"{type(self).__name__}({', '.join(attributes)})"
 
     def __getitem__(self, item: str) -> Decimal:
         """
@@ -297,3 +300,65 @@ class Mass(Unit):
         if self._ton_us is not None:
             return self._ton_us
         return self.ounce / Decimal("32000")
+
+
+# Derived Units
+
+
+class Velocity(Unit):
+    """
+
+    """
+    def __init__(
+            self, *,
+            foot_per_second: typing.Optional[Number] = None,
+            meter_per_second: typing.Optional[Number] = None,
+            mile_per_hour: typing.Optional[Number] = None
+    ):
+        """
+
+        :param foot_per_second:
+        :param meter_per_second:
+        :param mile_per_hour:
+        """
+        local_vars = locals()
+        kwargs = {k: local_vars[k] for k in inspect.signature(self.__init__).parameters}
+
+        (
+            self._foot_per_second, self._meter_per_second, self._mile_per_hour
+        ) = [Decimal() for _ in kwargs]
+
+        super().__init__(**kwargs)
+
+    @property
+    def foot_per_second(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._foot_per_second is not None:
+            return self._foot_per_second
+        return Length(meter=self.meter_per_second).foot
+
+    @property
+    def meter_per_second(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._foot_per_second is not None:
+            return Length(foot=self.foot_per_second).meter
+        elif self._meter_per_second is not None:
+            return self._meter_per_second
+        elif self._mile_per_hour is not None:
+            return Length(mile=self.mile_per_hour).meter / Decimal("3600")
+
+    @property
+    def mile_per_hour(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._mile_per_hour is not None:
+            return self._mile_per_hour
+        return Length(meter=self.meter_per_second).mile * Decimal("3600")

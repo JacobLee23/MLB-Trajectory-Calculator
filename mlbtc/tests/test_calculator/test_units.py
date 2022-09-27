@@ -14,12 +14,39 @@ from mlbtc.calculator.constants import Number
     "inch, foot, meter, mile, yard", [
         (0, 0, 0, 0, 0),
         (
-                1, Decimal("1") / Decimal("12"), Decimal("2.54") / Decimal("100"),
-                Decimal("1") / Decimal("63360"), Decimal("1") / Decimal("36")
+                1,
+                Decimal("1") / Decimal("12"),
+                Decimal("2.54") / Decimal("100"),
+                Decimal("1") / Decimal("63360"),
+                Decimal("1") / Decimal("36")
         ),
         (
-                10, Decimal("5") / Decimal("6"), Decimal("25.4") / Decimal("100"),
-                Decimal("1") / Decimal("6336"), Decimal("5") / Decimal("18")
+                12,
+                1,
+                Decimal("12") * Decimal("2.54") / Decimal("100"),
+                Decimal("1") / Decimal("5280"),
+                Decimal("1") / Decimal("3")
+        ),
+        (
+                Decimal("100") / Decimal("2.54"),
+                Decimal("100") / Decimal("2.54") / Decimal("12"),
+                1,
+                Decimal("100") / Decimal("2.54") / Decimal("63360"),
+                Decimal("100") / Decimal("2.54") / Decimal("36")
+        ),
+        (
+                63360,
+                5280,
+                Decimal("63360") * Decimal("2.54") / Decimal("100"),
+                1,
+                1760
+        ),
+        (
+                36,
+                3,
+                Decimal("36") * Decimal("2.54") / Decimal("100"),
+                Decimal("1") / Decimal("1760"),
+                1
         )
     ]
 )
@@ -34,7 +61,7 @@ def test_length(
         x = units.Length(**{unit: value})
 
         for key in arguments:
-            assert float(x[key]) == float(arguments[key]), x
+            assert float(x[key]) == float(arguments[key]), (unit, key, x)
 
 
 @pytest.mark.parametrize(
@@ -58,18 +85,25 @@ def test_temperature(
         x = units.Temperature(**{unit: value})
 
         for key in arguments:
-            assert float(x[key]) == float(arguments[key]), x
+            assert float(x[key]) == float(arguments[key]), (unit, key, x)
 
 
 @pytest.mark.parametrize(
     "gram, ounce, pound, ton_uk, ton_us", [
+        (0, 0, 0, 0, 0),
         (
-                Decimal("28.349523125"), 1, Decimal("1") / Decimal("16"),
-                Decimal("1") / Decimal("35840"), Decimal("1") / Decimal("32000")
+                Decimal("28.349523125"),
+                1,
+                Decimal("1") / Decimal("16"),
+                Decimal("1") / Decimal("35840"),
+                Decimal("1") / Decimal("32000")
         ),
         (
-                Decimal("28.349523125") * 16, 16, 1,
-                Decimal("1") / Decimal("2240"), Decimal("1") / Decimal("2000")
+                Decimal("28.349523125") * 16,
+                16,
+                1,
+                Decimal("1") / Decimal("2240"),
+                Decimal("1") / Decimal("2000")
         )
     ]
 )
@@ -84,4 +118,38 @@ def test_mass(
         x = units.Mass(**{unit: value})
 
         for key in arguments:
-            assert float(x[key]) == float(arguments[key]), x
+            assert float(x[key]) == float(arguments[key]), (unit, key, x)
+
+
+@pytest.mark.parametrize(
+    "foot_per_second, meter_per_second, mile_per_hour", [
+        (0, 0, 0),
+        (
+                1,
+                Decimal("12") * Decimal("2.54") / Decimal("100"),
+                Decimal("3600") / Decimal("5280")
+        ),
+        (
+                Decimal("100") / Decimal("2.54") / Decimal("12"),
+                1,
+                Decimal("3600") * Decimal("100") / Decimal("2.54") / Decimal("12") / Decimal("5280")
+        ),
+        (
+                Decimal("5280") / Decimal("3600"),
+                Decimal("5280") * Decimal("12") * Decimal("2.54") / Decimal("100") / Decimal("3600"),
+                1
+        )
+    ]
+)
+def test_velocity(
+        foot_per_second: Number, meter_per_second: Number, mile_per_hour: Number
+):
+    """
+    Unit tests for :py:class:`mlbtc.calculator.base_units.Velocity`.
+    """
+    arguments = {k: Decimal(v) for k, v in locals().items()}
+    for unit, value in arguments.items():
+        x = units.Velocity(**{unit: value})
+
+        for key in arguments:
+            assert float(x[key]) == float(arguments[key]), (unit, key, x)
