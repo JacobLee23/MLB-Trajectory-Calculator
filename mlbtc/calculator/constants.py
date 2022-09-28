@@ -13,6 +13,7 @@ Number = typing.Union[int, float, Decimal]
 
 # Constants
 PRECISION: int = 100
+decimal.getcontext().prec = PRECISION
 
 
 # Numerical Constants
@@ -22,7 +23,7 @@ def gauss_legendre() -> Decimal:
     :return:
     """
     with decimal.localcontext() as ctx:
-        ctx.prec = PRECISION + 1
+        ctx.prec = PRECISION + 2
 
         # Initial value setting
         a: Decimal = Decimal(1)
@@ -74,7 +75,7 @@ def _maclaurin_approximation(
         :return:
         """
         with decimal.localcontext() as ctx:
-            ctx.prec = PRECISION
+            ctx.prec = PRECISION + 2
 
             res: Decimal = Decimal()
             res_: Decimal
