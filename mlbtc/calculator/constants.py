@@ -163,7 +163,11 @@ class _MaclaurinSeries:
 
 # Trigonometric functions
 def sine(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`(-\infty, +\infty)`
+
+        Range: :math:`[-1, 1]`
 
     :param x:
     :return:
@@ -172,7 +176,11 @@ def sine(x: Decimal) -> Decimal:
 
 
 def cosine(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`(-\infty, +\infty)`
+
+        Range: :math:`[1, 1]`
 
     :param x:
     :return:
@@ -181,7 +189,11 @@ def cosine(x: Decimal) -> Decimal:
 
 
 def tangent(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`\{x | x \neq \frac{\pi}{2} + \pi n\}, n \in \mathbb{Z}`
+
+        Range: :math:`(-\infty, +\infty)`
 
     :param x:
     :return:
@@ -193,7 +205,11 @@ def tangent(x: Decimal) -> Decimal:
 
 
 def secant(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`\{x | x \neq \frac{\pi}{2} + \pi n\}, n \in \mathbb{Z}`
+
+        Range: :math:`(-\infty, -1] \bigcup [1, +\infty)`
 
     :param x:
     :return:
@@ -205,7 +221,11 @@ def secant(x: Decimal) -> Decimal:
 
 
 def cosecant(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`\{x | x \neq \pi n\}, n \in \mathbb{Z}`
+
+        Range: :math:`(-\infty, -1] \bigcup [1, +\infty)`
 
     :param x:
     :return:
@@ -217,7 +237,11 @@ def cosecant(x: Decimal) -> Decimal:
 
 
 def cotangent(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`\{x | x \neq \pi n\}, n \in \mathbb{Z}`
+
+        Range: :math:`(-\infty, +\infty)`
 
     :param x:
     :return:
@@ -230,14 +254,18 @@ def cotangent(x: Decimal) -> Decimal:
 
 # Inverse Trigonometric Functions
 def arcsine(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`[-1, 1]`
+
+        Range: :math:`[-\frac{\pi}{2}, \frac{\pi}{2}]`
 
     :param x:
     :return:
     """
     if not abs(x) <= 1:
         raise ValueError(
-            "Value of argument 'x' is outside the domain of arcsin(x): [-1, 1]"
+            "Value of argument 'x' is outside the domain of arcsin(x)"
         )
     if x == -1:
         return -PI / 2
@@ -248,14 +276,18 @@ def arcsine(x: Decimal) -> Decimal:
 
 
 def arccosine(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`[-1, 1]`
+
+        Range: :math:`[0, \pi]`
 
     :param x:
     :return:
     """
     if not abs(x) <= 1:
         raise ValueError(
-            "Value of argument 'x' is outside the domain of arccos(x): [-1, 1]"
+            "Value of argument 'x' is outside the domain of arccos(x)"
         )
     if x == -1:
         return PI
@@ -266,7 +298,11 @@ def arccosine(x: Decimal) -> Decimal:
 
 
 def arctangent(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`(-\infty, +\infty)`
+
+        Range: :math:`(-\frac{\pi}{2}, \frac{\pi}{2})`
 
     :param x:
     :return:
@@ -282,14 +318,18 @@ def arctangent(x: Decimal) -> Decimal:
 
 
 def arcsecant(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`(-\infty, +\infty)`
+
+        Range: :math:`(-\frac{\pi}{2}, \frac{\pi}{2})`
 
     :param x:
     :return:
     """
     if not abs(x) >= 1:
         raise ValueError(
-            "Value of argument 'x' is outside the domain of arcsec(x): (-inf, -1] U [1, inf)"
+            "Value of argument 'x' is outside the domain of arcsec(x)"
         )
     if x is INF:
         return PI / 2
@@ -300,14 +340,18 @@ def arcsecant(x: Decimal) -> Decimal:
 
 
 def arccosecant(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`(-\infty, +\infty)`
+
+        Range: :math:`(0, \pi)`
 
     :param x:
     :return:
     """
     if not abs(x) >= 1:
         raise ValueError(
-            "Value of argument 'x' is outside the domain of arccsc(x): (-inf, -1] U [1, inf)"
+            "Value of argument 'x' is outside the domain of arccsc(x)"
         )
     if x is INF:
         return Decimal(0)
@@ -318,7 +362,11 @@ def arccosecant(x: Decimal) -> Decimal:
 
 
 def arccotangent(x: Decimal) -> Decimal:
-    """
+    r"""
+    .. note::
+        Domain: :math:`(-\infty, +\infty)`
+
+        Range: :math:`(0, \pi)`
 
     :param x:
     :return:
