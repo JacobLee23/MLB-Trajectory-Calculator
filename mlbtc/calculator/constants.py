@@ -54,7 +54,7 @@ NINF = Decimal("-Infinity")
 
 
 # Maclaurin approximations
-def _maclaurin_approximation(
+def _maclaurin_expansion(
         clsmeth: typing.Callable[[type, int, Decimal], Decimal]
 ) -> typing.Callable:
     """
@@ -63,7 +63,7 @@ def _maclaurin_approximation(
     :return:
     """
 
-    def wrapper(cls: type, x: Decimal) -> Decimal:
+    def wrapper(cls: type, x: Decimal) -> typing.Generator[Decimal, None, None]:
         """
 
         :param cls:
@@ -73,20 +73,19 @@ def _maclaurin_approximation(
         with decimal.localcontext() as ctx:
             ctx.prec = PRECISION + 2
 
-            res: Decimal = Decimal()
-            res_: Decimal
-
             n = 0
             while True:
                 try:
-                    res_ = res + clsmeth(cls, n, x)
+                    term = clsmeth(cls, n, x)
                 except decimal.Overflow:
-                    return res
+                    return
 
-                if res == res_:
-                    return res
+                # Test for "convergence"
+                if term + Decimal(1) == Decimal(1):
+                    return
 
-                res = res_
+                yield term
+
                 n += 1
 
     return wrapper
@@ -97,7 +96,7 @@ class _MaclaurinSeries:
 
     """
     @classmethod
-    @_maclaurin_approximation
+    @_maclaurin_expansion
     def sine(cls, n: int, x: Decimal) -> Decimal:
         """
 
@@ -112,7 +111,7 @@ class _MaclaurinSeries:
         )
 
     @classmethod
-    @_maclaurin_approximation
+    @_maclaurin_expansion
     def cosine(cls, n: int, x: Decimal) -> Decimal:
         """
 
@@ -127,7 +126,7 @@ class _MaclaurinSeries:
         )
 
     @classmethod
-    @_maclaurin_approximation
+    @_maclaurin_expansion
     def arcsine(cls, n: int, x: Decimal) -> Decimal:
         """
 
@@ -146,7 +145,7 @@ class _MaclaurinSeries:
         )
 
     @classmethod
-    @_maclaurin_approximation
+    @_maclaurin_expansion
     def arctangent(cls, n: int, x: Decimal) -> Decimal:
         """
 
@@ -172,7 +171,7 @@ def sine(x: Decimal) -> Decimal:
     :param x:
     :return:
     """
-    return _MaclaurinSeries.sine(x)
+    return sum(_MaclaurinSeries.sine(x))
 
 
 def cosine(x: Decimal) -> Decimal:
@@ -185,7 +184,7 @@ def cosine(x: Decimal) -> Decimal:
     :param x:
     :return:
     """
-    return _MaclaurinSeries.cosine(x)
+    return sum(_MaclaurinSeries.cosine(x))
 
 
 def tangent(x: Decimal) -> Decimal:
@@ -272,7 +271,7 @@ def arcsine(x: Decimal) -> Decimal:
     elif x == 1:
         return PI / 2
     else:
-        return _MaclaurinSeries.arcsine(x)
+        return sum(_MaclaurinSeries.arcsine(x))
 
 
 def arccosine(x: Decimal) -> Decimal:
@@ -312,7 +311,7 @@ def arctangent(x: Decimal) -> Decimal:
     elif x is NINF:
         return -PI / 2
     elif -1 < x < 1:
-        return _MaclaurinSeries.arctangent(x)
+        return sum(_MaclaurinSeries.arctangent(x))
     else:
         return arcsine(x / (Decimal(1) + x ** 2).sqrt())
 
