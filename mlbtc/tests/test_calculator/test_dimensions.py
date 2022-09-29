@@ -1,32 +1,21 @@
 """
-Tests for :py:mod:`mlbtc.calculator.base_units`.
+Tests for :py:mod:`mlbtc.calculator.dimensions`.
 """
 
 from decimal import Decimal
 
 import pytest
 
-from mlbtc.calculator import units
+from mlbtc.calculator import dimensions
 from mlbtc.calculator.constants import Number
 
 
 @pytest.mark.parametrize(
-    "inch, foot, meter, mile, yard", [
+    "foot, inch, meter, mile, yard", [
         (0, 0, 0, 0, 0),
         (
                 1,
-                # in / (in / ft)
-                Decimal(1) / Decimal(12),
-                # in * (cm / in) / (cm / m)
-                Decimal("2.54") / Decimal(100),
-                # in / (in / mi)
-                Decimal(1) / Decimal(63360),
-                # in / (in / yd)
-                Decimal(1) / Decimal(36)
-        ),
-        (
                 12,
-                1,
                 # ft * (in / ft) * (cm / in) / (cm / m)
                 Decimal(1) * Decimal(12) * Decimal("2.54") / Decimal(100),
                 # ft / (ft / mi)
@@ -35,10 +24,21 @@ from mlbtc.calculator.constants import Number
                 Decimal(1) / Decimal(3)
         ),
         (
-                # m * (cm / m) / (cm / in)
-                Decimal(1) * Decimal(100) / Decimal("2.54"),
+                # in / (in / ft)
+                Decimal(1) / Decimal(12),
+                1,
+                # in * (cm / in) / (cm / m)
+                Decimal("2.54") / Decimal(100),
+                # in / (in / mi)
+                Decimal(1) / Decimal(63360),
+                # in / (in / yd)
+                Decimal(1) / Decimal(36)
+        ),
+        (
                 # m * (cm / m) / (cm / in) / (in / ft)
                 Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(12),
+                # m * (cm / m) / (cm / in)
+                Decimal(1) * Decimal(100) / Decimal("2.54"),
                 1,
                 # m * (cm / m) / (cm / in) / (in / mi)
                 Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(63360),
@@ -46,16 +46,16 @@ from mlbtc.calculator.constants import Number
                 Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(36)
         ),
         (
-                63360,
                 5280,
+                63360,
                 # mi * (in / mi) * (cm / in) / (cm / m)
                 Decimal(1) * Decimal(63360) * Decimal("2.54") / Decimal(100),
                 1,
                 1760
         ),
         (
-                36,
                 3,
+                36,
                 Decimal(36) * Decimal("2.54") / Decimal(100),
                 Decimal(1) / Decimal(1760),
                 1
@@ -63,14 +63,15 @@ from mlbtc.calculator.constants import Number
     ]
 )
 def test_length(
-        inch: Number, foot: Number, meter: Number, mile: Number, yard: Number
+        foot: Number, inch: Number, meter: Number, mile: Number, yard: Number
 ):
     """
-    Unit tests for :py:class:`mlbtc.calculator.base_units.Length`.
+    Unit tests for :py:class:`mlbtc.calculator.dimensions.Length`.
     """
     arguments = {k: Decimal(v) for k, v in locals().items()}
+    units = {k.name: k for k in dimensions.Length.units}
     for unit, value in arguments.items():
-        x = units.Length(**{unit: value})
+        x = dimensions.Length(value, units[unit])
 
         for key in arguments:
             assert float(x[key]) == float(arguments[key]), (unit, key, x)
@@ -90,11 +91,12 @@ def test_temperature(
         celsius: Number, fahrenheit: Number, kelvin: Number
 ):
     """
-    Unit tests for :py:class:`mlbtc.calculator.base_units.Temperature`.
+    Unit tests for :py:class:`mlbtc.calculator.dimensions.Temperature`.
     """
     arguments = {k: Decimal(v) for k, v in locals().items()}
+    units = {k.name: k for k in dimensions.Temperature.units}
     for unit, value in arguments.items():
-        x = units.Temperature(**{unit: value})
+        x = dimensions.Temperature(value, units[unit])
 
         for key in arguments:
             assert float(x[key]) == float(arguments[key]), (unit, key, x)
@@ -123,11 +125,12 @@ def test_mass(
         gram: Number, ounce: Number, pound: Number, ton_uk: Number, ton_us: Number
 ):
     """
-    Unit tests for :py:class:`mlbtc.calculator.base_units.Mass`.
+    Unit tests for :py:class:`mlbtc.calculator.dimensions.Mass`.
     """
     arguments = {k: Decimal(v) for k, v in locals().items()}
+    units = {v.name: v for v in dimensions.Mass.units}
     for unit, value in arguments.items():
-        x = units.Mass(**{unit: value})
+        x = dimensions.Mass(value, units[unit])
 
         for key in arguments:
             assert float(x[key]) == float(arguments[key]), (unit, key, x)
@@ -163,11 +166,12 @@ def test_velocity(
         foot_per_second: Number, meter_per_second: Number, mile_per_hour: Number
 ):
     """
-    Unit tests for :py:class:`mlbtc.calculator.base_units.Velocity`.
+    Unit tests for :py:class:`mlbtc.calculator.dimensions.Velocity`.
     """
     arguments = {k: Decimal(v) for k, v in locals().items()}
+    units = {v.name: v for v in dimensions.Velocity.units}
     for unit, value in arguments.items():
-        x = units.Velocity(**{unit: value})
+        x = dimensions.Velocity(value, units[unit])
 
         for key in arguments:
             assert float(x[key]) == float(arguments[key]), (unit, key, x)
