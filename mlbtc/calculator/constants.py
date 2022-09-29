@@ -11,45 +11,41 @@ import typing
 Number = typing.Union[int, float, Decimal]
 
 
-# Constants
+# Precision
 PRECISION: int = 100
 decimal.getcontext().prec = PRECISION
 
 
 # Numerical Constants
-def gauss_legendre() -> Decimal:
+def gauss_legendre(
+        a: Decimal = Decimal(1),
+        b: Decimal = 1 / Decimal(2).sqrt(),
+        t: Decimal = 1 / Decimal(4),
+        p: int = 1,
+        pi: Decimal = Decimal()
+):
     """
 
+    :param a:
+    :param b:
+    :param t:
+    :param p:
+    :param pi:
     :return:
     """
     with decimal.localcontext() as ctx:
         ctx.prec = PRECISION + 2
 
-        # Initial value setting
-        a: Decimal = Decimal(1)
-        b: Decimal = 1 / Decimal(2).sqrt()
-        t: Decimal = 1 / Decimal(4)
-        p: int = 1
-        pi: Decimal = Decimal()
+        a_: Decimal = (a + b) / 2
+        b_: Decimal = (a * b).sqrt()
+        t_: Decimal = t - p * (a - a_) ** 2
+        p_: int = 2 * p
+        pi_: Decimal = (a_ + b_) ** 2 / (4 * t_)
 
-        # (n + 1)th values
-        a_: Decimal
-        b_: Decimal
-        t_: Decimal
-        p_: int
-        pi_: Decimal
+        if pi == pi_:
+            return pi
 
-        while True:
-            a_ = (a + b) / 2
-            b_ = (a * b).sqrt()
-            t_ = t - p * (a - a_) ** 2
-            p_ = 2 * p
-            pi_ = (a_ + b_) ** 2 / (4 * t_)
-
-            if pi == pi_:
-                return pi
-
-            a, b, t, p, pi = a_, b_, t_, p_, pi_
+        return gauss_legendre(a_, b_, t_, p_, pi_)
 
 
 PI = gauss_legendre()
@@ -82,7 +78,10 @@ def _maclaurin_approximation(
 
             n = 0
             while True:
-                res_ = res + clsmeth(cls, n, x)
+                try:
+                    res_ = res + clsmeth(cls, n, x)
+                except decimal.Overflow:
+                    return res
 
                 if res == res_:
                     return res
@@ -107,7 +106,7 @@ class _MaclaurinSeries:
         :return:
         """
         return (
-                ((-1) ** n)
+                Decimal((-1) ** n)
                 / Decimal(math.factorial(2 * n + 1))
                 * (x ** (2 * n + 1))
         )
@@ -122,7 +121,7 @@ class _MaclaurinSeries:
         :return:
         """
         return (
-                ((-1) ** n)
+                Decimal((-1) ** n)
                 / Decimal(math.factorial(2 * n))
                 * (x ** (2 * n))
         )
@@ -139,9 +138,9 @@ class _MaclaurinSeries:
         return (
                 Decimal(math.factorial(2 * n))
                 / (
-                        (4 ** n)
+                        Decimal(4 ** n)
                         * Decimal(math.factorial(n)) ** 2
-                        * (2 * n + 1)
+                        * Decimal(2 * n + 1)
                 )
                 * (x ** (2 * n + 1))
         )
@@ -156,8 +155,8 @@ class _MaclaurinSeries:
         :return:
         """
         return (
-                (-1) ** n
-                / (2 * n + 1)
+                Decimal((-1) ** n)
+                / Decimal(2 * n + 1)
                 * (x ** (2 * n + 1))
         )
 
@@ -240,7 +239,12 @@ def arcsine(x: Decimal) -> Decimal:
         raise ValueError(
             "Value of argument 'x' is outside the domain of arcsin(x): [-1, 1]"
         )
-    return _MaclaurinSeries.arcsine(x)
+    if x == -1:
+        return -PI / 2
+    elif x == 1:
+        return PI / 2
+    else:
+        return _MaclaurinSeries.arcsine(x)
 
 
 def arccosine(x: Decimal) -> Decimal:
@@ -253,7 +257,12 @@ def arccosine(x: Decimal) -> Decimal:
         raise ValueError(
             "Value of argument 'x' is outside the domain of arccos(x): [-1, 1]"
         )
-    return PI / 2 - arcsine(x)
+    if x == -1:
+        return PI
+    elif x == 1:
+        return Decimal(0)
+    else:
+        return PI / 2 - arcsine(x)
 
 
 def arctangent(x: Decimal) -> Decimal:
@@ -266,8 +275,10 @@ def arctangent(x: Decimal) -> Decimal:
         return PI / 2
     elif x is NINF:
         return -PI / 2
-    else:
+    elif -1 < x < 1:
         return _MaclaurinSeries.arctangent(x)
+    else:
+        return arcsine(x / (Decimal(1) + x ** 2).sqrt())
 
 
 def arcsecant(x: Decimal) -> Decimal:
