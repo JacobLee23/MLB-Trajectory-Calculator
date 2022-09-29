@@ -110,13 +110,17 @@ class Length(Unit):
         if self._inch is not None:
             return self._inch
         elif self._foot is not None:
-            return self.foot * Decimal("12")
+            # ft * (in / ft)
+            return self.foot * Decimal(12)
         elif self._meter is not None:
+            # m / (m / cm) / (cm / in)
             return self.meter / self.centi / Decimal("2.54")
         elif self._mile is not None:
-            return self.mile * Decimal("5280") * Decimal("12")
+            # mi * (ft / mi) * (in / ft)
+            return self.mile * Decimal(5280) * Decimal(12)
         elif self._yard is not None:
-            return self.yard * Decimal("3") * Decimal("12")
+            # yd * (ft / yd) * (in / ft)
+            return self.yard * Decimal(3) * Decimal(12)
 
     @property
     def foot(self) -> Decimal:
@@ -126,7 +130,8 @@ class Length(Unit):
         """
         if self._foot is not None:
             return self._foot
-        return self.inch / Decimal("12")
+        # in / (in / ft)
+        return self.inch / Decimal(12)
 
     @property
     def meter(self) -> Decimal:
@@ -136,6 +141,7 @@ class Length(Unit):
         """
         if self._meter is not None:
             return self._meter
+        # in * (cm / in) * (m / cm)
         return self.inch * Decimal("2.54") * self.centi
 
     @property
@@ -146,7 +152,8 @@ class Length(Unit):
         """
         if self._mile is not None:
             return self._mile
-        return self.inch / Decimal("12") / Decimal("5280")
+        # in / (in / ft) / (ft / mi)
+        return self.inch / Decimal(12) / Decimal(5280)
 
     @property
     def yard(self) -> Decimal:
@@ -156,7 +163,8 @@ class Length(Unit):
         """
         if self._yard is not None:
             return self._yard
-        return self.inch / Decimal("12") / Decimal("3")
+        # in / (in / ft) / (ft / yd)
+        return self.inch / Decimal(12) / Decimal(3)
 
 
 class Temperature(Unit):
@@ -194,7 +202,7 @@ class Temperature(Unit):
         if self._celsius is not None:
             return self._celsius
         elif self._fahrenheit is not None:
-            return Decimal("5") / Decimal("9") * (self.fahrenheit - Decimal("32"))
+            return Decimal(5) / Decimal(9) * (self.fahrenheit - Decimal(32))
         elif self._kelvin is not None:
             return self.kelvin - Decimal("273.15")
 
@@ -206,7 +214,7 @@ class Temperature(Unit):
         """
         if self._fahrenheit is not None:
             return self._fahrenheit
-        return Decimal("9") / Decimal("5") * self.celsius + Decimal("32")
+        return Decimal(9) / Decimal(5) * self.celsius + Decimal(32)
 
     @property
     def kelvin(self) -> Decimal:
@@ -269,11 +277,11 @@ class Mass(Unit):
         elif self._ounce is not None:
             return self._ounce
         elif self._pound is not None:
-            return self.pound * Decimal("16")
+            return self.pound * Decimal(16)
         elif self._ton_uk is not None:
-            return self.ton_uk * Decimal("35840")
+            return self.ton_uk * Decimal(35840)
         elif self._ton_us is not None:
-            return self.ton_us * Decimal("32000")
+            return self.ton_us * Decimal(32000)
 
     @property
     def pound(self) -> Decimal:
@@ -283,7 +291,7 @@ class Mass(Unit):
         """
         if self._pound is not None:
             return self._pound
-        return self.ounce / Decimal("16")
+        return self.ounce / Decimal(16)
 
     @property
     def ton_uk(self) -> Decimal:
@@ -293,13 +301,13 @@ class Mass(Unit):
         """
         if self._ton_uk is not None:
             return self._ton_uk
-        return self.ounce / Decimal("35840")
+        return self.ounce / Decimal(35840)
 
     @property
     def ton_us(self) -> Decimal:
         if self._ton_us is not None:
             return self._ton_us
-        return self.ounce / Decimal("32000")
+        return self.ounce / Decimal(32000)
 
 
 # Derived Units
@@ -351,7 +359,7 @@ class Velocity(Unit):
         elif self._meter_per_second is not None:
             return self._meter_per_second
         elif self._mile_per_hour is not None:
-            return Length(mile=self.mile_per_hour).meter / Decimal("3600")
+            return Length(mile=self.mile_per_hour).meter / Decimal(3600)
 
     @property
     def mile_per_hour(self) -> Decimal:
@@ -361,4 +369,4 @@ class Velocity(Unit):
         """
         if self._mile_per_hour is not None:
             return self._mile_per_hour
-        return Length(meter=self.meter_per_second).mile * Decimal("3600")
+        return Length(meter=self.meter_per_second).mile * Decimal(3600)

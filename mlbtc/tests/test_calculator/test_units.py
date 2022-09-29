@@ -15,37 +15,49 @@ from mlbtc.calculator.constants import Number
         (0, 0, 0, 0, 0),
         (
                 1,
-                Decimal("1") / Decimal("12"),
-                Decimal("2.54") / Decimal("100"),
-                Decimal("1") / Decimal("63360"),
-                Decimal("1") / Decimal("36")
+                # in / (in / ft)
+                Decimal(1) / Decimal(12),
+                # in * (cm / in) / (cm / m)
+                Decimal("2.54") / Decimal(100),
+                # in / (in / mi)
+                Decimal(1) / Decimal(63360),
+                # in / (in / yd)
+                Decimal(1) / Decimal(36)
         ),
         (
                 12,
                 1,
-                Decimal("12") * Decimal("2.54") / Decimal("100"),
-                Decimal("1") / Decimal("5280"),
-                Decimal("1") / Decimal("3")
+                # ft * (in / ft) * (cm / in) / (cm / m)
+                Decimal(1) * Decimal(12) * Decimal("2.54") / Decimal(100),
+                # ft / (ft / mi)
+                Decimal(1) / Decimal(5280),
+                # ft / (ft / yd)
+                Decimal(1) / Decimal(3)
         ),
         (
-                Decimal("100") / Decimal("2.54"),
-                Decimal("100") / Decimal("2.54") / Decimal("12"),
+                # m * (cm / m) / (cm / in)
+                Decimal(1) * Decimal(100) / Decimal("2.54"),
+                # m * (cm / m) / (cm / in) / (in / ft)
+                Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(12),
                 1,
-                Decimal("100") / Decimal("2.54") / Decimal("63360"),
-                Decimal("100") / Decimal("2.54") / Decimal("36")
+                # m * (cm / m) / (cm / in) / (in / mi)
+                Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(63360),
+                # m * (cm / m) / (cm / in) / (in / yd)
+                Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(36)
         ),
         (
                 63360,
                 5280,
-                Decimal("63360") * Decimal("2.54") / Decimal("100"),
+                # mi * (in / mi) * (cm / in) / (cm / m)
+                Decimal(1) * Decimal(63360) * Decimal("2.54") / Decimal(100),
                 1,
                 1760
         ),
         (
                 36,
                 3,
-                Decimal("36") * Decimal("2.54") / Decimal("100"),
-                Decimal("1") / Decimal("1760"),
+                Decimal(36) * Decimal("2.54") / Decimal(100),
+                Decimal(1) / Decimal(1760),
                 1
         )
     ]
@@ -94,16 +106,16 @@ def test_temperature(
         (
                 Decimal("28.349523125"),
                 1,
-                Decimal("1") / Decimal("16"),
-                Decimal("1") / Decimal("35840"),
-                Decimal("1") / Decimal("32000")
+                Decimal(1) / Decimal(16),
+                Decimal(1) / Decimal(35840),
+                Decimal(1) / Decimal(32000)
         ),
         (
                 Decimal("28.349523125") * 16,
                 16,
                 1,
-                Decimal("1") / Decimal("2240"),
-                Decimal("1") / Decimal("2000")
+                Decimal(1) / Decimal(2240),
+                Decimal(1) / Decimal(2000)
         )
     ]
 )
@@ -126,17 +138,23 @@ def test_mass(
         (0, 0, 0),
         (
                 1,
-                Decimal("12") * Decimal("2.54") / Decimal("100"),
-                Decimal("3600") / Decimal("5280")
+                # (ft / s) * (in / ft) * (cm / in) / (cm / m)
+                Decimal(1) * Decimal(12) * Decimal("2.54") / Decimal(100),
+                # (ft / s) * (s / h) / (ft / mi)
+                Decimal(1) * Decimal(3600) / Decimal(5280)
         ),
         (
-                Decimal("100") / Decimal("2.54") / Decimal("12"),
+                # (m / s) / (cm / in) / (ft / in)
+                Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(12),
                 1,
-                Decimal("3600") * Decimal("100") / Decimal("2.54") / Decimal("12") / Decimal("5280")
+                # (m / s) * (s / h) * (cm / m) / (in / m) / (in / ft) / (ft / mi)
+                Decimal(1) * Decimal(3600) * Decimal(100) / Decimal("2.54") / Decimal(12) / Decimal(5280)
         ),
         (
-                Decimal("5280") / Decimal("3600"),
-                Decimal("5280") * Decimal("12") * Decimal("2.54") / Decimal("100") / Decimal("3600"),
+                # (mi / h) * (ft / mi) / (s / h)
+                Decimal(1) * Decimal(5280) / Decimal(3600),
+                # (mi / h) * (ft / mi) * (in / ft) * (cm / in) / (cm / m) / (c / h)
+                Decimal(1) * Decimal(5280) * Decimal(12) * Decimal("2.54") / Decimal(100) / Decimal(3600),
                 1
         )
     ]
