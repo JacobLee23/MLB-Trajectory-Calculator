@@ -49,14 +49,14 @@ class Unit(MetricPrefixes):
         :param kwargs:
         """
         if [x is not None for x in kwargs.values()].count(True) != 1:
+            params = ", ".join(kwargs)
             raise ValueError(
-                f"Exactly one of {', '.join(f'{x}' for x in kwargs)} must be non-null"
+                f"Exactly one of {params} must be a non-null value: {kwargs}"
             )
 
         for name, value in kwargs.items():
             self.__setattr__(
-                f"_{name}",
-                None if value is None else Decimal(str(value))
+                f"_{name}", None if value is None else Decimal(str(value))
             )
 
     def __repr__(self):
