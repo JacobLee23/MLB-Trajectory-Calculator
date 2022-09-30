@@ -138,9 +138,9 @@ def test_mass(
 
 @pytest.mark.parametrize(
     "foot_per_second, meter_per_second, mile_per_hour", [
-        (0, 0, 0),
+        (Decimal(0), Decimal(0), Decimal(0)),
         (
-                1,
+                Decimal(1),
                 # (ft / s) * (in / ft) * (cm / in) / (cm / m)
                 Decimal(1) * Decimal(12) * Decimal("2.54") / Decimal(100),
                 # (ft / s) * (s / h) / (ft / mi)
@@ -149,7 +149,7 @@ def test_mass(
         (
                 # (m / s) / (cm / in) / (ft / in)
                 Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(12),
-                1,
+                Decimal(1),
                 # (m / s) * (s / h) * (cm / m) / (in / m) / (in / ft) / (ft / mi)
                 Decimal(1) * Decimal(3600) * Decimal(100) / Decimal("2.54") / Decimal(12) / Decimal(5280)
         ),
@@ -158,7 +158,7 @@ def test_mass(
                 Decimal(1) * Decimal(5280) / Decimal(3600),
                 # (mi / h) * (ft / mi) * (in / ft) * (cm / in) / (cm / m) / (c / h)
                 Decimal(1) * Decimal(5280) * Decimal(12) * Decimal("2.54") / Decimal(100) / Decimal(3600),
-                1
+                Decimal(1)
         )
     ]
 )
