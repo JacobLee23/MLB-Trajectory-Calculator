@@ -5,6 +5,8 @@
 from decimal import Decimal
 import typing
 
+from .constants import PI
+
 
 class SIPrefixes:
     """
@@ -101,7 +103,53 @@ class Dimension(SIPrefixes):
         return self.__getattribute__(item)
 
 
-# Derived Dimensions
+# Basic Dimensions
+
+
+class Angle(Dimension):
+    """
+
+    """
+    Degree = Unit("degree", "deg")
+    Radian = Unit("radian", "rad")
+    Revolution = Unit("revolution", "rev")
+
+    units = (
+        Degree, Radian, Revolution
+    )
+
+    @property
+    def degree(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._unit is self.Degree:
+            return self._x
+        return self.radian * Decimal(180) / PI
+
+    @property
+    def radian(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._unit is self.Degree:
+            return self._x * PI / Decimal(180)
+        elif self._unit is self.Radian:
+            return self._x
+        elif self._unit is self.Revolution:
+            return self._x * (Decimal(2) * PI)
+
+    @property
+    def revolution(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._unit is self.Revolution:
+            return self._x
+        return self.radian / (Decimal(2) * PI)
 
 
 class Length(Dimension):

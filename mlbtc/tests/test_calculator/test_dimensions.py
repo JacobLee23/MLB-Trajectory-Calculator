@@ -8,6 +8,31 @@ import pytest
 
 from mlbtc.calculator import dimensions
 from mlbtc.calculator.constants import Number
+from mlbtc.calculator.constants import PI
+
+
+@pytest.mark.parametrize(
+    "degree, radian, revolution", [
+        (0, 0, 0),
+        (Decimal(90), PI / Decimal(2), Decimal(1) / Decimal(4)),
+        (Decimal(180), PI, Decimal(1) / Decimal(2)),
+        (Decimal(270), Decimal(3) * PI / Decimal(2), Decimal(3) / Decimal(4)),
+        (Decimal(360), Decimal(2) * PI, Decimal(1))
+    ]
+)
+def test_angle(
+        degree: Number, radian: Number, revolution: Number
+):
+    """
+    Unit tests for :py:class:`mlbtc.calculator.dimensions.Angle`.
+    """
+    arguments = {k: Decimal(v) for k, v in locals().items()}
+    units = {k.name: k for k in dimensions.Angle.units}
+    for unit, value in arguments.items():
+        x = dimensions.Angle(value, units[unit])
+
+        for key in arguments:
+            assert float(x[key]) == float(arguments[key]), (unit, key, x)
 
 
 @pytest.mark.parametrize(
