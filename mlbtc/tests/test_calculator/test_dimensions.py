@@ -137,18 +137,31 @@ def test_mass(
 
 
 @pytest.mark.parametrize(
-    "foot_per_second, meter_per_second, mile_per_hour", [
-        (Decimal(0), Decimal(0), Decimal(0)),
+    "foot_per_second, kilometer_per_hour, meter_per_second, mile_per_hour", [
+        (Decimal(0), Decimal(0), Decimal(0), Decimal(0)),
         (
                 Decimal(1),
+                # (ft / s) * (in / ft) * (cm / in) / (cm / km) * (s / h)
+                Decimal(1) * Decimal(12) * Decimal("2.54") / Decimal(100000) * Decimal(3600),
                 # (ft / s) * (in / ft) * (cm / in) / (cm / m)
                 Decimal(1) * Decimal(12) * Decimal("2.54") / Decimal(100),
                 # (ft / s) * (s / h) / (ft / mi)
                 Decimal(1) * Decimal(3600) / Decimal(5280)
         ),
         (
+                # (km / h) * (cm / km) / (cm / in) / (in / ft) / (s / h)
+                Decimal(1) * Decimal(100000) / Decimal("2.54") / Decimal(12) / Decimal(3600),
+                Decimal(1),
+                # (km / h) * (m / km) / (s / h)
+                Decimal(1) * Decimal(1000) / Decimal(3600),
+                # (km / h) * (cm / km) / (cm / in) / (in / ft) * (ft / mi)
+                Decimal(1) * Decimal(100000) / Decimal("2.54") / Decimal(12) / Decimal(5280)
+        ),
+        (
                 # (m / s) / (cm / in) / (ft / in)
                 Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(12),
+                # (m / s) / (m / km) * (s / h)
+                Decimal(1) / Decimal(1000) * Decimal(3600),
                 Decimal(1),
                 # (m / s) * (s / h) * (cm / m) / (in / m) / (in / ft) / (ft / mi)
                 Decimal(1) * Decimal(3600) * Decimal(100) / Decimal("2.54") / Decimal(12) / Decimal(5280)
@@ -156,6 +169,8 @@ def test_mass(
         (
                 # (mi / h) * (ft / mi) / (s / h)
                 Decimal(1) * Decimal(5280) / Decimal(3600),
+                # (mi / h) * (ft / mi) * (in / ft) * (cm / in) / (cm / km)
+                Decimal(1) * Decimal(5280) * Decimal(12) * Decimal("2.54") / Decimal(100000),
                 # (mi / h) * (ft / mi) * (in / ft) * (cm / in) / (cm / m) / (c / h)
                 Decimal(1) * Decimal(5280) * Decimal(12) * Decimal("2.54") / Decimal(100) / Decimal(3600),
                 Decimal(1)
@@ -163,7 +178,8 @@ def test_mass(
     ]
 )
 def test_velocity(
-        foot_per_second: Number, meter_per_second: Number, mile_per_hour: Number
+        foot_per_second: Number, kilometer_per_hour: Number, meter_per_second: Number,
+        mile_per_hour: Number
 ):
     """
     Unit tests for :py:class:`mlbtc.calculator.dimensions.Velocity`.

@@ -337,6 +337,16 @@ class Velocity(Dimension):
         return Length(self.meter_per_second, Length.Meter).foot
 
     @property
+    def kilometer_per_hour(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._unit is self.KilometerPerHour:
+            return self._x
+        return self.meter_per_second / self.kilo * Decimal(3600)
+
+    @property
     def meter_per_second(self) -> Decimal:
         """
 
@@ -344,6 +354,8 @@ class Velocity(Dimension):
         """
         if self._unit is self.FootPerSecond:
             return Length(self._x, Length.Foot).meter
+        elif self._unit is self.KilometerPerHour:
+            return self._x * self.kilo / Decimal(3600)
         elif self._unit is self.MeterPerSecond:
             return self._x
         elif self._unit is self.MilePerHour:
