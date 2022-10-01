@@ -370,3 +370,72 @@ class Velocity(Dimension):
         if self._unit is self.MilePerHour:
             return self._x
         return Length(self.meter_per_second, Length.Meter).mile * Decimal(3600)
+
+
+class Acceleration(Dimension):
+    """
+
+    """
+    # Imperial Units
+    FootPerSecondPerSecond = Unit("foot_per_second_per_second", "ft/(s^2)")
+    MilePerHourPerSecond = Unit("mile_per_hour_per_second", "mi/hr/s")
+
+    # SI Units
+    KilometerPerHourPerSecond = Unit("kilometer_per_hour_per_second", "km/hr/s")
+    MeterPerSecondPerSecond = Unit("meter_per_second_per_second", "m/(s^2)")
+
+    units = (
+        FootPerSecondPerSecond, KilometerPerHourPerSecond, MeterPerSecondPerSecond,
+        MilePerHourPerSecond
+    )
+
+    @property
+    def foot_per_second_per_second(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._unit is self.FootPerSecondPerSecond:
+            return self._x
+        return Velocity(
+            self.meter_per_second_per_second, Velocity.MeterPerSecond
+        ).foot_per_second
+
+    @property
+    def kilometer_per_hour_per_second(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._unit is self.KilometerPerHourPerSecond:
+            return self._x
+        return Velocity(
+            self.meter_per_second_per_second, Velocity.MeterPerSecond
+        ).kilometer_per_hour
+
+    @property
+    def meter_per_second_per_second(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._unit is self.FootPerSecondPerSecond:
+            return Velocity(self._x, Velocity.FootPerSecond).meter_per_second
+        elif self._unit is self.KilometerPerHourPerSecond:
+            return Velocity(self._x, Velocity.KilometerPerHour).meter_per_second
+        elif self._unit is self.MeterPerSecondPerSecond:
+            return self._x
+        elif self._unit is self.MilePerHourPerSecond:
+            return Velocity(self._x, Velocity.MilePerHour).meter_per_second
+
+    @property
+    def mile_per_hour_per_second(self) -> Decimal:
+        """
+
+        :return:
+        """
+        if self._unit is self.MilePerHourPerSecond:
+            return self._x
+        return Velocity(
+            self.meter_per_second_per_second, Velocity.MeterPerSecond
+        ).mile_per_hour

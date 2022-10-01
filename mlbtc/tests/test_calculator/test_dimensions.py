@@ -191,3 +191,64 @@ def test_velocity(
 
         for key in arguments:
             assert float(x[key]) == float(arguments[key]), (unit, key, x)
+
+
+@pytest.mark.parametrize(
+    """foot_per_second_per_second,
+    kilometer_per_hour_per_second,
+    meter_per_second_per_second,
+    mile_per_hour_per_second""", [
+        (Decimal(0), Decimal(0), Decimal(0), Decimal(0)),
+        (
+                Decimal(1),
+                # (ft / (s ^ 2)) * (in / ft) * (cm / in) / (cm / km) * (s / h)
+                Decimal(1) * Decimal(12) * Decimal("2.54") / Decimal(100000) * Decimal(3600),
+                # (ft / (s ^ 2)) * (in / ft) * (cm / in) / (cm / m)
+                Decimal(1) * Decimal(12) * Decimal("2.54") / Decimal(100),
+                # (ft / (s ^ 2)) * (s / h) / (ft / mi)
+                Decimal(1) * Decimal(3600) / Decimal(5280)
+        ),
+        (
+                # (km / h / s) * (cm / km) / (cm / in) / (in / ft) / (s / h)
+                Decimal(1) * Decimal(100000) / Decimal("2.54") / Decimal(12) / Decimal(3600),
+                Decimal(1),
+                # (km / h / s) * (m / km) / (s / h)
+                Decimal(1) * Decimal(1000) / Decimal(3600),
+                # (km / h / s) * (cm / km) / (cm / in) / (in / ft) * (ft / mi)
+                Decimal(1) * Decimal(100000) / Decimal("2.54") / Decimal(12) / Decimal(5280)
+        ),
+        (
+                # (m / (s ^ 2)) / (cm / in) / (ft / in)
+                Decimal(1) * Decimal(100) / Decimal("2.54") / Decimal(12),
+                # (m / (s ^ 2)) / (m / km) * (s / h)
+                Decimal(1) / Decimal(1000) * Decimal(3600),
+                Decimal(1),
+                # (m / (s ^ 2)) * (s / h) * (cm / m) / (in / m) / (in / ft) / (ft / mi)
+                Decimal(1) * Decimal(3600) * Decimal(100) / Decimal("2.54") / Decimal(12) / Decimal(5280)
+        ),
+        (
+                # (mi / h / s) * (ft / mi) / (s / h)
+                Decimal(1) * Decimal(5280) / Decimal(3600),
+                # (mi / h / s) * (ft / mi) * (in / ft) * (cm / in) / (cm / km)
+                Decimal(1) * Decimal(5280) * Decimal(12) * Decimal("2.54") / Decimal(100000),
+                # (mi / h / s) * (ft / mi) * (in / ft) * (cm / in) / (cm / m) / (c / h)
+                Decimal(1) * Decimal(5280) * Decimal(12) * Decimal("2.54") / Decimal(100) / Decimal(3600),
+                Decimal(1)
+        )
+    ]
+)
+def test_velocity(
+        foot_per_second_per_second: Number, kilometer_per_hour_per_second: Number,
+        meter_per_second_per_second: Number, mile_per_hour_per_second: Number
+):
+    """
+    Unit tests for :py:class:`mlbtc.calculator.dimensions.Acceleration`.
+    """
+    arguments = {k: Decimal(v) for k, v in locals().items()}
+    units = {v.name: v for v in dimensions.Acceleration.units}
+    for unit, value in arguments.items():
+        x = dimensions.Acceleration(value, units[unit])
+
+        for key in arguments:
+            print(key)
+            assert float(x[key]) == float(arguments[key]), (unit, key, x)
