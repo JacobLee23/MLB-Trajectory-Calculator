@@ -7,9 +7,6 @@ from decimal import Decimal
 import math
 import typing
 
-# Type definitions
-Number = typing.Union[int, float, Decimal]
-
 
 # Precision
 PRECISION: int = 100

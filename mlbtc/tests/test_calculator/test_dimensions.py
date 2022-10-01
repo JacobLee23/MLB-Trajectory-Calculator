@@ -7,7 +7,6 @@ from decimal import Decimal
 import pytest
 
 from mlbtc.calculator import dimensions
-from mlbtc.calculator.constants import Number
 from mlbtc.calculator.constants import PI
 
 
@@ -21,7 +20,7 @@ from mlbtc.calculator.constants import PI
     ]
 )
 def test_angle(
-        degree: Number, radian: Number, revolution: Number
+        degree: Decimal, radian: Decimal, revolution: Decimal
 ):
     """
     Unit tests for :py:class:`mlbtc.calculator.dimensions.Angle`.
@@ -88,7 +87,7 @@ def test_angle(
     ]
 )
 def test_length(
-        foot: Number, inch: Number, meter: Number, mile: Number, yard: Number
+        foot: Decimal, inch: Decimal, meter: Decimal, mile: Decimal, yard: Decimal
 ):
     """
     Unit tests for :py:class:`mlbtc.calculator.dimensions.Length`.
@@ -113,7 +112,7 @@ def test_length(
     ]
 )
 def test_temperature(
-        celsius: Number, fahrenheit: Number, kelvin: Number
+        celsius: Decimal, fahrenheit: Decimal, kelvin: Decimal
 ):
     """
     Unit tests for :py:class:`mlbtc.calculator.dimensions.Temperature`.
@@ -147,7 +146,7 @@ def test_temperature(
     ]
 )
 def test_mass(
-        gram: Number, ounce: Number, pound: Number, ton_uk: Number, ton_us: Number
+        gram: Decimal, ounce: Decimal, pound: Decimal, ton_uk: Decimal, ton_us: Decimal
 ):
     """
     Unit tests for :py:class:`mlbtc.calculator.dimensions.Mass`.
@@ -203,8 +202,8 @@ def test_mass(
     ]
 )
 def test_velocity(
-        foot_per_second: Number, kilometer_per_hour: Number, meter_per_second: Number,
-        mile_per_hour: Number
+        foot_per_second: Decimal, kilometer_per_hour: Decimal, meter_per_second: Decimal,
+        mile_per_hour: Decimal
 ):
     """
     Unit tests for :py:class:`mlbtc.calculator.dimensions.Velocity`.
@@ -263,8 +262,8 @@ def test_velocity(
     ]
 )
 def test_velocity(
-        foot_per_second_per_second: Number, kilometer_per_hour_per_second: Number,
-        meter_per_second_per_second: Number, mile_per_hour_per_second: Number
+        foot_per_second_per_second: Decimal, kilometer_per_hour_per_second: Decimal,
+        meter_per_second_per_second: Decimal, mile_per_hour_per_second: Decimal
 ):
     """
     Unit tests for :py:class:`mlbtc.calculator.dimensions.Acceleration`.
