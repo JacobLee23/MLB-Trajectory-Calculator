@@ -1,0 +1,32 @@
+[build-system[
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "MLB-Trajectory-Calculator"
+version = "0.0.0"
+description = "A Python package for calculating and simulating MLB batted ball trajectories."
+readme = "README.md
+authors = [ { name = "Jacob Lee", email = "Jacob.J.Lee@outlook.com" } ]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+license = { file = "LICENSE" }
+python_requires = ">= 3.8"
+dependencies = []
+
+[project.urls]
+homepage = "https://github.com/JacobLee23/MLB-Trajectory-Calculator"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mlbtc*"]
