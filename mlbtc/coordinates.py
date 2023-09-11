@@ -1,4 +1,5 @@
 """
+This module contains classes for handling mathematical coordinates.
 """
 
 import typing
@@ -8,6 +9,8 @@ import numpy as np
 
 class Coordinates2D:
     r"""
+    Converts ordered pairs between 2-dimensional coordinate systems.
+
     +-------------------+-----------------------+-----------------------+
     | Coordinate System | ``coordinates[0]``    | ``coordinates[1]``    |
     +===================+=======================+=======================+
@@ -16,13 +19,13 @@ class Coordinates2D:
     | Polar             | :math:`r`             | :math:`\theta`        |
     +-------------------+-----------------------+-----------------------+
 
-    :param coordinates:
-    :param system:
+    :param coordinates: An ordered pair of real numbers
+    :param system: The corresponding coordinate system name
     """
     def __init__(self, coordinates: np.ndarray, system: typing.Literal["cartesian", "polar"]):
         if coordinates.shape != (2,):
             raise ValueError
-        
+
         self._coordinates, self._system = coordinates, system
 
     def __repr__(self) -> str:
@@ -30,7 +33,7 @@ class Coordinates2D:
             f"{k}={self.__getattribute__(k)}" for k in ["cartesian", "polar"]
         )
         return f"{type(self).__name__}({arguments})"
-    
+
     @property
     def cartesian(self) -> np.ndarray:
         """
@@ -51,7 +54,7 @@ class Coordinates2D:
             )
         else:
             return np.array([np.nan, np.nan])
-        
+
     @property
     def polar(self) -> np.ndarray:
         r"""
@@ -75,6 +78,8 @@ class Coordinates2D:
 
 class Coordinates3D:
     r"""
+    Converts ordered triplets between 3-dimensional coordinate systems.
+
     +-------------------+-----------------------+-----------------------+-----------------------+
     | Coordinate System | ``coordinates[0]``    | ``coordinates[1]``    | ``coordinates[2]``    |
     +===================+=======================+=======================+=======================+
@@ -85,13 +90,13 @@ class Coordinates3D:
     | Spherical         | :math:`\r`            | :math:`\theta`        | :math:`\phi`          |
     +-------------------+-----------------------+-----------------------+-----------------------+
 
-    :param coordinates:
-    :param system:
+    :param coordinates: An ordered triplet of real numbers
+    :param system: The corresponding coordinate system name
     """
     def __init__(self, coordinates: np.ndarray, system: typing.Literal["cartesian", "cylindrical", "spherical"]):
         if coordinates.shape != (3,):
             raise ValueError
-        
+
         self._coordinates, self._system = coordinates, system
 
     def __repr__(self) -> str:
@@ -134,7 +139,7 @@ class Coordinates3D:
             )
         else:
             return np.array([np.nan, np.nan, np.nan])
-        
+
     @property
     def cylindrical(self) -> np.ndarray:
         r"""
@@ -170,7 +175,7 @@ class Coordinates3D:
             )
         else:
             return np.array([np.nan, np.nan, np.nan])
-        
+
     @property
     def spherical(self) -> np.ndarray:
         r"""
