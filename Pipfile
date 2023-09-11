@@ -4,10 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+numpy = "*"
 
 [dev-packages]
 build = "*"
 twine = "*"
+pylint = "*"
+vermin = "*"
 
 [requires]
 python_version = "3.11"
