@@ -5,6 +5,9 @@ import typing
 
 import numpy as np
 
+from ..coordinates import Coordinates2D
+from ..coordinates import Vector2D
+
 
 class Temperature:
     """
@@ -50,6 +53,21 @@ class Temperature:
             return self._value
         else:
             return np.nan
+
+
+class Wind(Vector2D):
+    r"""
+    Handles wind velocity.
+
+    .. note::
+
+        Wind direction is expressed as an angular displacement from straightaway centerfield.
+
+    :param v_w: wind speed, :math:`{v}_{w}` (:math:`\frac{m}{s}`)
+    :param phi_w: wind direction, :math:`{\phi}_{w}` (:math:`rad`)
+    """
+    def __init__(self, v_w: float, phi_w: float):
+        super().__init__(Coordinates2D(np.array([v_w, phi_w]), "polar").cartesian)
 
 
 class AirDensity:
