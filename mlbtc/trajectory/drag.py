@@ -1,19 +1,46 @@
 """
-.. py:data:: DRAG_COEFFICIENT
-
-    Estimated mean baseball drag coefficient by season
-    (<source `https://baseballsavant.mlb.com/drag-dashboard`>).
-
-    :type: pd.Series
 """
 
-import numpy as np
+import datetime
+import json
+import re
+
+import bs4
 import pandas as pd
+import requests
 
 
-DRAG_COEFFICIENT = pd.Series(
-    {
-        2016: 0.3461, 2017: 0.3346, 2018: 0.3374, 2019: 0.3279, 2020: 0.3410, 2021: 0.3410,
-        2022: 0.3467, 2023: 0.3406
-    }
-)
+class DragCoefficient:
+    """
+    Baseball drag coefficient data by season (<source `https://baseballsavant.mlb.com/drag-dashboard`>).
+    """
+    _url = "https://baseballsavant.mlb.com/drag-dashboard"
+    _regex = re.compile(r"^const serverVals = (.*);$")
+
+    def __init__(self):
+        with requests.get(self._url, timeout=100) as response:
+            soup = bs4.BeautifulSoup(response.text, features="lxml")
+        self._data = json.loads(
+            self._regex.search(
+                str(soup.select_one("div.article-template > script").text.strip())
+            ).group(1)
+        )
+
+    @property
+    def binned_data(self) -> pd.DataFrame:
+        """
+        """
+        dataframe = pd.DataFrame(self._data["binnedData"])
+        dataframe.columns = ["Year", "CD", "TotalPitches", "n", "freq"]
+        return dataframe
+    
+    @property
+    def scatter_data(self) -> pd.DataFrame:
+        """
+        """
+        dataframe = pd.DataFrame(self._data["scatterData"])
+        dataframe.columns=["Date", "n", "Games", "MeanCD"]
+        dataframe.loc[:, "Date"] = dataframe.loc[:, "Date"].apply(
+            lambda x: datetime.datetime.strptime(x["value"], "%Y-%m-%d")
+        )
+        return dataframe
