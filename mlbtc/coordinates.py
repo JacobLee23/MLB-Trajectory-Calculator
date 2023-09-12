@@ -20,9 +20,6 @@ class CoordinatesND:
             raise ValueError
         self._coordinates, self._system = coordinates, system
 
-        for attr in self.systems:
-            self.__setattr__(attr, NotImplemented)
-
     def __repr__(self) -> str:
         arguments = ", ".join(f"{k}={self.__getattribute__(k)}" for k in self.systems)
         return f"{type(self).__name__}({arguments})"
@@ -232,7 +229,7 @@ class VectorND:
         self._vector = vector
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}(<{', '.join(self.vector)}>)"
+        return f"{type(self).__name__}(<{', '.join(map(str, self.vector))}>)"
     
     def __add__(self, other: typing.Union["VectorND", typing.Any]) -> "VectorND":
         return type(self)(
