@@ -9,6 +9,6 @@
 import pandas as pd
 
 
-PROJECTILE = pd.Series(
-    {"WeightMin": 5, "WeightMax": 5.25, "CircumferenceMin": 9, "CircumferenceMax": 9.25}
+PROJECTILE = pd.DataFrame(
+    {"weight": {"min": 5, "max": 5.25}, "circumference": {"min": 9, "max": 9.25}}
 )
