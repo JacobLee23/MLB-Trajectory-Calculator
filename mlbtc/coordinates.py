@@ -76,6 +76,47 @@ class Coordinates2D:
             return np.array([np.nan, np.nan])
 
 
+class Vector2D:
+    """
+    Handles computations involving 2-dimensional vectors.
+    """
+    def __init__(self, vector: np.ndarray):
+        if vector.shape != (2,):
+            raise ValueError
+        self._vector = vector
+
+    def __repr__(self) -> str:
+        arguments = ", ".join(f"{a}={b}" for a, b in zip(["x", "y"], self.vector))
+        return f"{type(self).__name__}({arguments})"
+    
+    def __str__(self) -> str:
+        return "<{}, {}>".format(*self.vector)
+
+    @property
+    def vector(self) -> np.ndarray:
+        """
+        """
+        return self._vector
+    
+    @property
+    def coordinates(self) -> Coordinates2D:
+        """
+        """
+        return Coordinates3D(self.vector, "cartesian")
+    
+    @property
+    def radius(self) -> float:
+        """
+        """
+        return self.coordinates.polar[0]
+    
+    @property
+    def azimuth(self) -> float:
+        """
+        """
+        return self.coordinates.polar[1]
+
+
 class Coordinates3D:
     r"""
     Converts ordered triplets between 3-dimensional coordinate systems.
@@ -211,3 +252,56 @@ class Coordinates3D:
             return self._coordinates
         else:
             return np.array([np.nan, np.nan, np.nan])
+
+
+class Vector3D:
+    """
+    Handles computations involving 3-dimensional vectors.
+    """
+    def __init__(self, vector: np.ndarray):
+        if vector.shape != (3,):
+            raise ValueError
+        self._vector = vector
+
+    def __repr__(self) -> str:
+        arguments = ", ".join(f"{a}={b}" for a, b in zip(["x", "y", "z"], self.vector))
+        return f"{type(self).__name__}({arguments})"
+    
+    def __str__(self) -> str:
+        return "<{}, {}, {}>".format(*self.vector)
+
+    @property
+    def vector(self) -> np.ndarray:
+        """
+        """
+        return self._vector
+    
+    @property
+    def coordinates(self) -> Coordinates3D:
+        """
+        """
+        return Coordinates3D(self.vector, "cartesian")
+    
+    @property
+    def central_radius(self) -> float:
+        """
+        """
+        return self.coordinates.spherical[0]
+    
+    @property
+    def axial_radius(self) -> float:
+        """
+        """
+        return self.coordinates.cylindrical[0]
+    
+    @property
+    def azimuth(self) -> float:
+        """
+        """
+        return self.coordinates.spherical[2]
+    
+    @property
+    def elevation(self) -> float:
+        """
+        """
+        return self.coordinates.cylindrical[1]
