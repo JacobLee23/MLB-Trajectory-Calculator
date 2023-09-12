@@ -9,6 +9,8 @@ import bs4
 import pandas as pd
 import requests
 
+from ..coordinates import Vector3D
+
 
 class DragCoefficient:
     """
@@ -44,3 +46,14 @@ class DragCoefficient:
             lambda x: datetime.datetime.strptime(x["value"], "%Y-%m-%d")
         )
         return dataframe
+
+
+class DragForce(Vector3D):
+    r"""
+    :param rho: density of the fluid, :math:`\rho`
+    :param v: velocity of the projectile relative to the fluid, :math:`v`
+    :param a: cross-sectional area of the projectile, :math:`A`
+    :param c_d: the drag coefficient of the projectile in the fluid, :math:`{C}_{d}`
+    """
+    def __init__(self, rho: float, v: Vector3D, a: float, c_d: float):
+        super().__init__(rho * v ** 2 * c_d * a / 2)
