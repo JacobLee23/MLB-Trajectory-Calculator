@@ -7,7 +7,28 @@ import typing
 import numpy as np
 
 
-class Coordinates2D:
+class CoordinatesND:
+    """
+    """
+    n: int
+    systems: typing.List[str]
+
+    def __init__(self, coordinates: np.ndarray, system: str):
+        if coordinates.shape != (self.n,):
+            raise ValueError
+        if system not in self.systems:
+            raise ValueError
+        self._coordinates, self._system = coordinates, system
+
+        for attr in self.systems:
+            self.__setattr__(attr, NotImplemented)
+
+    def __repr__(self) -> str:
+        arguments = ", ".join(f"{k}={self.__getattribute__(k)}" for k in self.systems)
+        return f"{type(self).__name__}({arguments})"
+
+
+class Coordinates2D(CoordinatesND):
     r"""
     Converts ordered pairs between 2-dimensional coordinate systems.
 
@@ -22,17 +43,8 @@ class Coordinates2D:
     :param coordinates: An ordered pair of real numbers
     :param system: The corresponding coordinate system name
     """
-    def __init__(self, coordinates: np.ndarray, system: typing.Literal["cartesian", "polar"]):
-        if coordinates.shape != (2,):
-            raise ValueError
-
-        self._coordinates, self._system = coordinates, system
-
-    def __repr__(self) -> str:
-        arguments = ", ".join(
-            f"{k}={self.__getattribute__(k)}" for k in ["cartesian", "polar"]
-        )
-        return f"{type(self).__name__}({arguments})"
+    n = 2
+    systems = ["cartesian", "polar"]
 
     @property
     def cartesian(self) -> np.ndarray:
@@ -76,48 +88,7 @@ class Coordinates2D:
             return np.array([np.nan, np.nan])
 
 
-class Vector2D:
-    """
-    Handles computations involving 2-dimensional vectors.
-    """
-    def __init__(self, vector: np.ndarray):
-        if vector.shape != (2,):
-            raise ValueError
-        self._vector = vector
-
-    def __repr__(self) -> str:
-        arguments = ", ".join(f"{a}={b}" for a, b in zip(["x", "y"], self.vector))
-        return f"{type(self).__name__}({arguments})"
-    
-    def __str__(self) -> str:
-        return "<{}, {}>".format(*self.vector)
-
-    @property
-    def vector(self) -> np.ndarray:
-        """
-        """
-        return self._vector
-    
-    @property
-    def coordinates(self) -> Coordinates2D:
-        """
-        """
-        return Coordinates3D(self.vector, "cartesian")
-    
-    @property
-    def radius(self) -> float:
-        """
-        """
-        return self.coordinates.polar[0]
-    
-    @property
-    def azimuth(self) -> float:
-        """
-        """
-        return self.coordinates.polar[1]
-
-
-class Coordinates3D:
+class Coordinates3D(CoordinatesND):
     r"""
     Converts ordered triplets between 3-dimensional coordinate systems.
 
@@ -134,17 +105,8 @@ class Coordinates3D:
     :param coordinates: An ordered triplet of real numbers
     :param system: The corresponding coordinate system name
     """
-    def __init__(self, coordinates: np.ndarray, system: typing.Literal["cartesian", "cylindrical", "spherical"]):
-        if coordinates.shape != (3,):
-            raise ValueError
-
-        self._coordinates, self._system = coordinates, system
-
-    def __repr__(self) -> str:
-        arguments = ", ".join(
-            f"{k}={self.__getattribute__(k)}" for k in ["cartesian", "cylindrical", "spherical"]
-        )
-        return f"{type(self).__name__}({arguments})"
+    n = 3
+    systems = ["cartesian", "cylindrical", "spherical"]
 
     @property
     def cartesian(self) -> np.ndarray:
@@ -254,27 +216,137 @@ class Coordinates3D:
             return np.array([np.nan, np.nan, np.nan])
 
 
-class Vector3D:
+class VectorND:
     """
-    Handles computations involving 3-dimensional vectors.
+    Handles computations involving n-dimensional vectors.
+
+    .. py:attribute:: n
+
+        :type: int
     """
+    n: int
+
     def __init__(self, vector: np.ndarray):
-        if vector.shape != (3,):
+        if vector.shape != (self.n,):
             raise ValueError
         self._vector = vector
 
     def __repr__(self) -> str:
-        arguments = ", ".join(f"{a}={b}" for a, b in zip(["x", "y", "z"], self.vector))
-        return f"{type(self).__name__}({arguments})"
+        return f"{type(self).__name__}(<{', '.join(self.vector)}>)"
     
-    def __str__(self) -> str:
-        return "<{}, {}, {}>".format(*self.vector)
-
+    def __add__(self, other: typing.Union["VectorND", typing.Any]) -> "VectorND":
+        return type(self)(
+            self.vector + (other.vector if isinstance(other, type(self)) else other)
+        )
+    
+    def __sub__(self, other: typing.Union["VectorND", typing.Any]) -> "VectorND":
+        return type(self)(
+            self.vector - (other.vector if isinstance(other, type(self)) else other)
+        )
+    
+    def __mul__(self, other: typing.Union["VectorND", typing.Any]) -> "VectorND":
+        return type(self)(
+            self.vector * (other.vector if isinstance(other, type(self)) else other)
+        )
+    
+    def __matmul__(self, other: typing.Union["VectorND", typing.Any]) -> "VectorND":
+        return type(self)(
+            self.vector @ (other.vector if isinstance(other, type(self)) else other)
+        )
+    
+    def __truediv__(self, other: typing.Union["VectorND", typing.Any]) -> "VectorND":
+        return type(self)(
+            self.vector / (other.vector if isinstance(other, type(self)) else other)
+        )
+    
+    def __floordiv__(self, other: typing.Union["VectorND", typing.Any]) -> "VectorND":
+        return type(self)(
+            self.vector // (other.vector if isinstance(other, type(self)) else other)
+        )
+    
+    def __mod__(self, other: typing.Union["VectorND", typing.Any]) -> "VectorND":
+        return type(self)(
+            self.vector % (other.vector if isinstance(other, type(self)) else other)
+        )
+    
+    def __pow__(self, other: typing.Union["VectorND", typing.Any]) -> "VectorND":
+        return type(self)(
+            self.vector ** (other.vector if isinstance(other, type(self)) else other)
+        )
+    
     @property
     def vector(self) -> np.ndarray:
         """
         """
         return self._vector
+    
+    @property
+    def coordinates(self) -> CoordinatesND:
+        """
+        """
+        raise NotImplementedError
+
+
+class Vector2D(VectorND):
+    """
+    Handles computations involving 2-dimensional vectors.
+    """
+    n = 2
+    
+    @property
+    def x(self) -> float:
+        """
+        """
+        return self.vector[0]
+    
+    @property
+    def y(self) -> float:
+        """
+        """
+        return self.vector[1]
+    
+    @property
+    def coordinates(self) -> Coordinates2D:
+        """
+        """
+        return Coordinates2D(self.vector, "cartesian")
+    
+    @property
+    def radius(self) -> float:
+        """
+        """
+        return self.coordinates.polar[0]
+    
+    @property
+    def azimuth(self) -> float:
+        """
+        """
+        return self.coordinates.polar[1]
+
+
+class Vector3D(VectorND):
+    """
+    Handles computations involving 3-dimensional vectors.
+    """
+    n = 3
+
+    @property
+    def x(self) -> float:
+        """
+        """
+        return self.vector[0]
+    
+    @property
+    def y(self) -> float:
+        """
+        """
+        return self.vector[1]
+    
+    @property
+    def z(self) -> float:
+        """
+        """
+        return self.vector[2]
     
     @property
     def coordinates(self) -> Coordinates3D:
